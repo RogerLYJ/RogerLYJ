@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "RogerLYJ",
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.formatOnSave": true,
+		"files.autoSave": "afterDelay",
+		"workbench.colorTheme": "Default Dark+"
+	}
+}
