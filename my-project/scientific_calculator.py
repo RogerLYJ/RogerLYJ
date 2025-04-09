@@ -39,8 +39,7 @@ def logarithm(a, base=10):
 
 def display_menu():
     print("Scientific Calculator")
-    print("1. Addition")2
-    
+    print("1. Addition")    
     print("2. Subtraction")
     print("3. Multiplication")
     print("4. Division")
