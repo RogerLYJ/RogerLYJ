@@ -8,7 +8,8 @@ def recognize_speech_from_mic(language="zh-CN"):
     # Download Voice Model Data from https://alphacephei.com/vosk/models
     # And set model path based on language
     model_paths = {
-        "zh-CN": r"D:\IdeaWorkSpaces\RogerLYJ\vosk-model-small-cn-0.22",
+        "zh-CN": r"D:\IdeaWorkSpaces\RogerLYJ\vosk-model-cn-0.22",
+        # "zh-CN": r"D:\IdeaWorkSpaces\RogerLYJ\vosk-model-small-cn-10.22",
         "en-US": r"D:\IdeaWorkSpaces\RogerLYJ\vosk-model-small-en-us-0.15"
     }
     model_path = model_paths.get(language)

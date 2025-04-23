@@ -54,64 +54,28 @@ def fetch_with_requests(url):
 
 
 def parse_lottery_data(div_element):
-    # ===== 1. 提取奖池和销售金额 =====
-    kjqtxx_div = div_element.find_element(By.XPATH, "./preceding-sibling::div[@class='kjqtxx']")
-    pool_amount = kjqtxx_div.find_element(By.CSS_SELECTOR, ".jc strong").text.strip()
-    sales_amount = kjqtxx_div.find_element(By.CSS_SELECTOR, ".xs").text.split("：")[1].replace("元", "").strip()
+    # 打印当前元素信息：期数对象
+    # print(div_element.get_attribute("class"), ":", div_element.text)
+    print("######################################################################")
 
-    # ===== 2. 解析中奖情况表格（动态处理rowspan）=====
-    table = div_element.find_element(By.CSS_SELECTOR, ".qkbg table")
-    rows = table.find_elements(By.CSS_SELECTOR, "tbody tr")
-    
-    prize_data = []
-    rowspan_cache = {}  # 缓存跨行数据 {列索引: (值, 剩余行数)}
+    # 查找子元素
+    try:
+        children = div_element.find_elements(By.CLASS_NAME, "qkbg")
+        for child in children:
+            print(child.text)
+    except Exception as e:
+        print("元素查找失败:", e)
+    print("######################################################################")
 
-    for row in rows:
-        cells = row.find_elements(By.TAG_NAME, "td")
-        current_data = {}
-
-        # 处理单元格并更新缓存
-        for col_idx, cell in enumerate(cells):
-            # 读取缓存数据或新数据
-            if col_idx in rowspan_cache:
-                current_data[col_idx] = rowspan_cache[col_idx]["value"]
-                rowspan_cache[col_idx]["remaining"] -= 1
-                if rowspan_cache[col_idx]["remaining"] == 0:
-                    del rowspan_cache[col_idx]
-            else:
-                cell_text = cell.text.strip()
-                rowspan = int(cell.get_attribute("rowspan") or 1)
-                if rowspan > 1:
-                    rowspan_cache[col_idx] = {
-                        "value": cell_text,
-                        "remaining": rowspan - 1
-                    }
-                current_data[col_idx] = cell_text
-
-        # 结构化存储（动态适配列位置）
-        if len(cells) >= 4:
-            prize_data.append({
-                "奖项": current_data.get(0, ""),
-                "中奖注数": current_data.get(1, ""),
-                "单注奖金": current_data.get(2, "").replace("元", ""),
-                "中奖条件": current_data.get(3, "")
-            })
-
-    # ===== 3. 提取一等奖分布和兑奖期限 =====
-    first_prize_text = div_element.find_element(
-        By.XPATH, ".//dl[dt[contains(., '一等奖中奖情况')]]/dd"
-    ).text.strip()
-    
-    deadline_text = div_element.find_element(
-        By.XPATH, ".//dl[dt[contains(., '兑奖期限')]]/dd"
-    ).text.split("，")[0].strip()
-
-    print("奖池金额：", pool_amount,
-        "销售金额：", sales_amount,
-        "中奖明细：", prize_data,
-        "一等奖分布：", first_prize_text,
-        "兑奖截止日：", deadline_text)
-
+    # 奖项
+    # 中奖注数
+    # 单注奖金
+    # 中奖条件
+    # 奖池金额
+    # 销售金额
+    # 中奖明细
+    # 一等奖分布
+    # 兑奖截止日
 
 def main():
     url_str = "https://www.zhcw.com/kjxx/ssq/kjxq/?kjData=2024090"
