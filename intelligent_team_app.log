@@ -1,0 +1,8 @@
+2025-09-26 14:58:12,497 - __main__ - WARNING - TTS module not available: No module named 'pyttsx3'
+2025-09-26 14:58:12,498 - __main__ - WARNING - STT module not available: No module named 'vosk'
+2025-09-26 14:58:12,503 - __main__ - INFO - Plugin registered: task_manager
+2025-09-26 14:58:12,503 - __main__ - INFO - Plugin system initialized. Directory: plugins
+2025-09-26 14:58:12,503 - __main__ - INFO - Intelligent Team Application initialized
+2025-09-26 15:00:23,647 - __main__ - INFO - Team data saved successfully
+2025-09-26 15:00:23,647 - __main__ - INFO - Added team member: 张三
+2025-09-26 15:01:53,655 - __main__ - INFO - Application shutdown
