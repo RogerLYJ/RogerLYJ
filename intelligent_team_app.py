@@ -167,6 +167,26 @@ class TeamManager:
             logger.error(f"Error adding member: {e}")
             return False
     
+    def update_member(self, member_id: str, **kwargs) -> bool:
+        """Update fields on an existing team member."""
+        try:
+            if member_id not in self.members:
+                logger.warning(f"Member {member_id} not found")
+                return False
+
+            member = self.members[member_id]
+            for key, value in kwargs.items():
+                if hasattr(member, key):
+                    setattr(member, key, value)
+                else:
+                    logger.warning(f"TeamMember has no field '{key}'; skipping")
+            self.save_team_data()
+            logger.info(f"Updated team member: {member.name}")
+            return True
+        except Exception as e:
+            logger.error(f"Error updating member: {e}")
+            return False
+
     def remove_member(self, member_id: str) -> bool:
         """Remove a team member."""
         try:
@@ -348,6 +368,7 @@ class IntelligentTeamApp:
 团队管理 / Team Management:
 - add_member: 添加团队成员 / Add team member
 - remove_member: 删除团队成员 / Remove team member  
+- update_member: 更新成员信息(角色/技能/状态) / Update member info (role/skills/status)
 - list_members: 列出所有成员 / List all members
 - search_members: 搜索成员 / Search members
 
@@ -381,6 +402,8 @@ class IntelligentTeamApp:
             self.display_help()
         elif command == 'add_member':
             self.add_member_interactive()
+        elif command == 'update_member':
+            self.update_member_interactive()
         elif command == 'list_members':
             self.list_members()
         elif command == 'config':
@@ -433,7 +456,63 @@ class IntelligentTeamApp:
         except Exception as e:
             logger.error(f"Error in add_member_interactive: {e}")
             print(f"Error: {e}")
-    
+
+    def update_member_interactive(self):
+        """Interactive member update — lets the user change role, skills, or status."""
+        try:
+            is_cn = self.config_manager.config.language == "zh-CN"
+            print("更新团队成员信息 / Update Team Member")
+            member_id = input("成员ID / Member ID: ").strip()
+
+            member = self.team_manager.get_member(member_id)
+            if not member:
+                msg = f"未找到成员: {member_id}" if is_cn else f"Member not found: {member_id}"
+                print(msg)
+                self.voice_interface.speak(msg)
+                return
+
+            # Show current values so the user knows what they are changing
+            print(f"\n当前信息 / Current info:")
+            print(f"  角色/Role   : {member.role}")
+            print(f"  技能/Skills : {', '.join(member.skills)}")
+            print(f"  状态/Status : {member.status}")
+            print("(直接回车保留原值 / Press Enter to keep current value)\n")
+
+            new_role = input(f"新角色 / New role [{member.role}]: ").strip()
+            new_skills_input = input(
+                f"新技能 (逗号分隔) / New skills (comma-separated) [{', '.join(member.skills)}]: "
+            ).strip()
+            print("状态选项 / Status options: available, busy, offline")
+            new_status = input(f"新状态 / New status [{member.status}]: ").strip()
+
+            updates: Dict[str, Any] = {}
+            if new_role:
+                updates["role"] = new_role
+            if new_skills_input:
+                updates["skills"] = [s.strip() for s in new_skills_input.split(',') if s.strip()]
+            if new_status:
+                valid_statuses = {"available", "busy", "offline"}
+                if new_status in valid_statuses:
+                    updates["status"] = new_status
+                else:
+                    print(f"无效状态 '{new_status}', 已忽略 / Invalid status '{new_status}', ignored")
+
+            if not updates:
+                print("未做任何更改 / No changes made")
+                return
+
+            if self.team_manager.update_member(member_id, **updates):
+                msg = f"成员 {member.name} 信息已更新" if is_cn else f"Member {member.name} updated successfully"
+                print(msg)
+                self.voice_interface.speak(msg)
+            else:
+                msg = f"更新失败" if is_cn else "Update failed"
+                print(msg)
+                self.voice_interface.speak(msg)
+        except Exception as e:
+            logger.error(f"Error in update_member_interactive: {e}")
+            print(f"Error: {e}")
+
     def list_members(self):
         """List all team members."""
         members = self.team_manager.list_members()
