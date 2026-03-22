@@ -1,0 +1,10 @@
+{
+  "language": "zh-CN",
+  "voice_rate": 200,
+  "voice_pitch": 50,
+  "data_directory": "data",
+  "plugins_directory": "plugins",
+  "voice_enabled": true,
+  "auto_save": true,
+  "log_level": "INFO"
+}

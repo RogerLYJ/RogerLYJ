@@ -1,0 +1,15 @@
+{
+  "dev001": {
+    "id": "dev001",
+    "name": "张三",
+    "role": "高级Python工程师",
+    "skills": [
+      "Python",
+      "机器学习",
+      "数据分析"
+    ],
+    "status": "busy",
+    "contact_info": {},
+    "joined_date": "2025-09-26T15:00:23.647285"
+  }
+}
